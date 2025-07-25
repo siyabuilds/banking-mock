@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import assert from "assert";
 
-const ERROR_MESSAGES = {
+export const ERROR_MESSAGES = {
   INVALID_AMOUNT: "Invalid amount: must be a positive number",
   INSUFFICIENT_FUNDS: "Insufficient funds for withdrawal",
   INVALID_INTEREST_RATE: "Invalid interest rate: must be a non-negative number",
@@ -15,7 +15,7 @@ const validateAmount = (amount) => {
 };
 
 export class BankAccount {
-  constructor({ interestRate = 0 }) {
+  constructor({ interestRate = 0 } = {}) {
     const rate = Decimal.isDecimal(interestRate)
       ? interestRate
       : new Decimal(interestRate);
