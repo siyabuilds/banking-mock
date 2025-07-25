@@ -1,0 +1,26 @@
+{
+  "name": "banking-mock",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "This is just a simple mock app demonstrating a simple flow on how Financial Institutions like banks handle operations. Written in ES6 JavaScript.",
+  "main": "src/bank_account.js",
+  "dependencies": {
+    "decimal.js": "^10.6.0"
+  },
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/siyabuilds/banking-mock.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/siyabuilds/banking-mock/issues"
+  },
+  "homepage": "https://github.com/siyabuilds/banking-mock#readme",
+  "devDependencies": {
+    "jasmine": "^5.9.0"
+  }
+}
