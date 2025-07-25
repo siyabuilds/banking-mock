@@ -28,16 +28,15 @@ export class BankAccount {
 
   deposit({ amount }) {
     validateAmount(amount);
-    this.balance = this.balance.plus(new Decimal(amount));
+    this.balance = this.balance.plus(amount);
   }
 
   withdraw({ amount }) {
     validateAmount(amount);
-    const withdrawalAmount = new Decimal(amount);
-    if (!this.balance.gte(withdrawalAmount)) {
+    if (!this.balance.gte(amount)) {
       throw new Error(ERROR_MESSAGES.INSUFFICIENT_FUNDS);
     }
-    this.balance = this.balance.minus(withdrawalAmount);
+    this.balance = this.balance.minus(amount);
   }
 
   getBalance() {
