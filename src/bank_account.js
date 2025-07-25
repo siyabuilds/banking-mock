@@ -7,12 +7,11 @@ export const ERROR_MESSAGES = {
 };
 
 const validateAmount = (amount) => {
-  if (!Decimal.isDecimal(amount)) {
-    amount = new Decimal(amount);
-  }
-  if (!amount.gt(0)) {
+  let validatedAmount = Decimal.isDecimal(amount) ? amount : new Decimal(amount);
+  if (!validatedAmount.gt(0)) {
     throw new Error(ERROR_MESSAGES.INVALID_AMOUNT);
   }
+  return validatedAmount;
 };
 
 export class BankAccount {
