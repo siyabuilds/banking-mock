@@ -1,6 +1,7 @@
 {
   "name": "banking-mock",
   "version": "1.0.0",
+  "type": "module",
   "description": "This is just a simple mock app demonstrating a simple flow on how Financial Institutions like banks handle operations. Written in ES6 JavaScript.",
   "main": "src/bank_account.js",
   "dependencies": {
