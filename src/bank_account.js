@@ -15,7 +15,7 @@ const validateAmount = (amount) => {
 };
 
 export class BankAccount {
-  constructor({ interestRate = 0 } = {}) {
+  constructor({ interestRate = 0 }) {
     const rate = Decimal.isDecimal(interestRate)
       ? interestRate
       : new Decimal(interestRate);
