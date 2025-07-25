@@ -12,4 +12,22 @@ const getInterest = ({ accountType }, accountTypes) => {
 export class Bank {
   #accounts = new Map();
   #accountTypes = new Set();
+
+  get accounts() {
+    return this.#accounts;
+  }
+
+  get accountTypes() {
+    return this.#accountTypes;
+  }
+
+  addAccountType({ accountType, interestRate }) {
+    if (this.#accountTypes.has(accountType)) {
+      throw new Error("Account type already exists");
+    }
+    if (interestRate < 0) {
+      throw new Error("Interest rate cannot be negative");
+    }
+    this.#accountTypes.add(accountType);
+  }
 }
