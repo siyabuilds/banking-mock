@@ -7,7 +7,7 @@
     "decimal.js": "^10.6.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/siyabuilds/banking-mock/issues"
   },
-  "homepage": "https://github.com/siyabuilds/banking-mock#readme"
+  "homepage": "https://github.com/siyabuilds/banking-mock#readme",
+  "devDependencies": {
+    "jasmine": "^5.9.0"
+  }
 }
