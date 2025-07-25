@@ -1,5 +1,4 @@
 import Decimal from "decimal.js";
-import assert from "assert";
 
 export const ERROR_MESSAGES = {
   INVALID_AMOUNT: "Invalid amount: must be a positive number",
@@ -11,7 +10,9 @@ const validateAmount = (amount) => {
   if (!Decimal.isDecimal(amount)) {
     amount = new Decimal(amount);
   }
-  assert(amount.gt(0), ERROR_MESSAGES.INVALID_AMOUNT);
+  if (!amount.gt(0)) {
+    throw new Error(ERROR_MESSAGES.INVALID_AMOUNT);
+  }
 };
 
 export class BankAccount {
@@ -19,7 +20,9 @@ export class BankAccount {
     const rate = Decimal.isDecimal(interestRate)
       ? interestRate
       : new Decimal(interestRate);
-    assert(rate.gte(0), ERROR_MESSAGES.INVALID_INTEREST_RATE);
+    if (!rate.gte(0)) {
+      throw new Error(ERROR_MESSAGES.INVALID_INTEREST_RATE);
+    }
     this.balance = new Decimal(0);
     this.interestRate = rate;
   }
@@ -32,10 +35,9 @@ export class BankAccount {
   withdraw({ amount }) {
     validateAmount(amount);
     const withdrawalAmount = new Decimal(amount);
-    assert(
-      this.balance.gte(withdrawalAmount),
-      ERROR_MESSAGES.INSUFFICIENT_FUNDS
-    );
+    if (!this.balance.gte(withdrawalAmount)) {
+      throw new Error(ERROR_MESSAGES.INSUFFICIENT_FUNDS);
+    }
     this.balance = this.balance.minus(withdrawalAmount);
   }
 
