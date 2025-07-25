@@ -54,6 +54,7 @@ export class BankAccount {
   }
 
   updateBalance(amount) {
-    this.balance = this.balance.plus(new Decimal(amount));
+    const validAmount = Decimal.isDecimal(amount) ? amount : new Decimal(amount);
+    this.balance = this.balance.plus(validAmount);
   }
 }
