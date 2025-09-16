@@ -7,7 +7,9 @@ export const ERROR_MESSAGES = {
 };
 
 const validateAmount = (amount) => {
-  let validatedAmount = Decimal.isDecimal(amount) ? amount : new Decimal(amount);
+  let validatedAmount = Decimal.isDecimal(amount)
+    ? amount
+    : new Decimal(amount);
   if (!validatedAmount.gt(0)) {
     throw new Error(ERROR_MESSAGES.INVALID_AMOUNT);
   }
@@ -52,7 +54,9 @@ export class BankAccount {
   }
 
   updateBalance(amount) {
-    const validAmount = Decimal.isDecimal(amount) ? amount : new Decimal(amount);
+    const validAmount = Decimal.isDecimal(amount)
+      ? amount
+      : new Decimal(amount);
     this.balance = this.balance.plus(validAmount);
   }
 }
