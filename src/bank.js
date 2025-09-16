@@ -1,27 +1,25 @@
 import { BankAccount } from "./bank_account.js";
+import Decimal from "decimal.js";
 
 export const BANK_ERROR_MESSAGES = {
   ACCOUNT_TYPE_EXISTS: "Account type already exists",
   NEGATIVE_INTEREST_RATE: "Interest rate cannot be negative",
   INVALID_ACCOUNT_TYPE: "Invalid account type",
+  ACCOUNT_NOT_FOUND: "Account not found",
+  INVALID_DEPOSIT_AMOUNT: "Deposit amount must be positive",
+  INVALID_WITHDRAWAL_AMOUNT: "Withdrawal amount exceeds available balance",
 };
 
 const getInterest = (accountType, accountTypes) => {
-  for (const type of accountTypes) {
-    if (type.accountType === accountType) {
-      return type.interestRate;
-    }
+  const typeObj = accountTypes.find((type) => type.accountType === accountType);
+  if (typeObj) {
+    return typeObj.interestRate;
   }
   throw new Error(BANK_ERROR_MESSAGES.INVALID_ACCOUNT_TYPE);
 };
 
 const isAccNumberTaken = (accNumber, accounts) => {
-  for (const account of accounts.values()) {
-    if (account.accountNumber === accNumber) {
-      return true;
-    }
-  }
-  return false;
+  return accounts.some((account) => account.accountNumber === accNumber);
 };
 
 const generateAccNumber = () =>
@@ -35,9 +33,13 @@ const generateUniqueAccNumber = (accounts) => {
   return accNumber;
 };
 
+const retrieveAccount = (accountNumber, accounts) => {
+  return accounts.find((acc) => acc.accountNumber === accountNumber);
+};
+
 export class Bank {
-  #accounts = new Map();
-  #accountTypes = new Set();
+  #accounts = [];
+  #accountTypes = [];
 
   get accounts() {
     return this.#accounts;
@@ -48,36 +50,64 @@ export class Bank {
   }
 
   addAccountType({ accountType, interestRate }) {
-    for (const type of this.#accountTypes) {
-      if (type.accountType === accountType) {
-        throw new Error(BANK_ERROR_MESSAGES.ACCOUNT_TYPE_EXISTS);
-      }
+    if (this.#accountTypes.some((type) => type.accountType === accountType)) {
+      throw new Error(BANK_ERROR_MESSAGES.ACCOUNT_TYPE_EXISTS);
     }
     if (interestRate < 0) {
       throw new Error(BANK_ERROR_MESSAGES.NEGATIVE_INTEREST_RATE);
     }
-    this.#accountTypes.add({ accountType, interestRate });
+    this.#accountTypes.push({ accountType, interestRate });
   }
 
   openBankAccount({ accountType }) {
-    let accountTypeExists = false;
-    for (const type of this.#accountTypes) {
-      if (type.accountType === accountType) {
-        accountTypeExists = true;
-        break;
-      }
-    }
-    if (!accountTypeExists) {
+    const typeObj = this.#accountTypes.find(
+      (type) => type.accountType === accountType
+    );
+    if (!typeObj) {
       throw new Error(BANK_ERROR_MESSAGES.INVALID_ACCOUNT_TYPE);
     }
     const accountNumber = generateUniqueAccNumber(this.#accounts);
-    const interestRate = getInterest(accountType, this.#accountTypes);
+    const interestRate = typeObj.interestRate;
     const account = new BankAccount({
       accountType,
       accountNumber,
       interestRate,
     });
-    this.#accounts.set(accountNumber, account);
+    this.#accounts.push(account);
     return accountNumber;
+  }
+
+  deposit({ accountNumber, amount }) {
+    const account = retrieveAccount(accountNumber, this.#accounts);
+    if (!account) {
+      throw new Error(BANK_ERROR_MESSAGES.ACCOUNT_NOT_FOUND);
+    }
+
+    const decimalAmount = new Decimal(amount);
+
+    if (decimalAmount.lte(0)) {
+      throw new Error(BANK_ERROR_MESSAGES.INVALID_DEPOSIT_AMOUNT);
+    }
+
+    account.deposit({ amount: decimalAmount.toNumber() });
+  }
+
+  withdraw({ accountNumber, amount }) {
+    const account = retrieveAccount(accountNumber, this.#accounts);
+    if (!account) {
+      throw new Error(BANK_ERROR_MESSAGES.ACCOUNT_NOT_FOUND);
+    }
+
+    const decimalAmount = new Decimal(amount);
+
+    if (decimalAmount.lte(0)) {
+      throw new Error(BANK_ERROR_MESSAGES.INVALID_WITHDRAWAL_AMOUNT);
+    }
+
+    if (decimalAmount.gt(new Decimal(account.getBalance()))) {
+      throw new Error(BANK_ERROR_MESSAGES.INVALID_WITHDRAWAL_AMOUNT);
+    }
+
+    account.withdraw({ amount: decimalAmount.toNumber() });
   }
 }
