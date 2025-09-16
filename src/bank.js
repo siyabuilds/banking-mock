@@ -6,8 +6,9 @@ export const BANK_ERROR_MESSAGES = {
   NEGATIVE_INTEREST_RATE: "Interest rate cannot be negative",
   INVALID_ACCOUNT_TYPE: "Invalid account type",
   ACCOUNT_NOT_FOUND: "Account not found",
-  INVALID_DEPOSIT_AMOUNT: "Deposit amount must be positive",
-  INVALID_WITHDRAWAL_AMOUNT: "Withdrawal amount exceeds available balance",
+  INVALID_AMOUNT: (operation) =>
+    `Invalid amount for ${operation}: must be a positive number`,
+  EXCEEDS_BALANCE: "Amount exceeds available balance",
 };
 
 const getInterest = (accountType, accountTypes) => {
@@ -86,7 +87,7 @@ export class Bank {
     const decimalAmount = new Decimal(amount);
 
     if (decimalAmount.lte(0)) {
-      throw new Error(BANK_ERROR_MESSAGES.INVALID_DEPOSIT_AMOUNT);
+      throw new Error(BANK_ERROR_MESSAGES.INVALID_AMOUNT("deposit"));
     }
 
     account.deposit({ amount: decimalAmount.toNumber() });
@@ -101,11 +102,11 @@ export class Bank {
     const decimalAmount = new Decimal(amount);
 
     if (decimalAmount.lte(0)) {
-      throw new Error(BANK_ERROR_MESSAGES.INVALID_WITHDRAWAL_AMOUNT);
+      throw new Error(BANK_ERROR_MESSAGES.INVALID_AMOUNT("withdrawal"));
     }
 
     if (decimalAmount.gt(new Decimal(account.getBalance()))) {
-      throw new Error(BANK_ERROR_MESSAGES.INVALID_WITHDRAWAL_AMOUNT);
+      throw new Error(BANK_ERROR_MESSAGES.EXCEEDS_BALANCE);
     }
 
     account.withdraw({ amount: decimalAmount.toNumber() });
