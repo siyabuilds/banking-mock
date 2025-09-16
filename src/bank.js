@@ -111,4 +111,25 @@ export class Bank {
 
     account.withdraw({ amount: decimalAmount.toNumber() });
   }
+
+  transfer({ fromAccountNumber, toAccountNumber, amount }) {
+    const fromAccount = retrieveAccount(fromAccountNumber, this.#accounts);
+    const toAccount = retrieveAccount(toAccountNumber, this.#accounts);
+
+    if (!fromAccount || !toAccount) {
+      throw new Error(BANK_ERROR_MESSAGES.ACCOUNT_NOT_FOUND);
+    }
+
+    const decimalAmount = new Decimal(amount);
+
+    if (decimalAmount.lte(0)) {
+      throw new Error(BANK_ERROR_MESSAGES.INVALID_AMOUNT("transfer"));
+    }
+
+    if (decimalAmount.gt(new Decimal(fromAccount.getBalance()))) {
+      throw new Error(BANK_ERROR_MESSAGES.EXCEEDS_BALANCE);
+    }
+    fromAccount.withdraw({ amount: decimalAmount.toNumber() });
+    toAccount.deposit({ amount: decimalAmount.toNumber() });
+  }
 }
