@@ -5,10 +5,13 @@
   "description": "This is just a simple mock app demonstrating a simple flow on how Financial Institutions like banks handle operations. Written in ES6 JavaScript.",
   "main": "src/bank_account.js",
   "dependencies": {
-    "decimal.js": "^10.6.0"
+    "decimal.js": "^10.6.0",
+    "express": "^5.1.0"
   },
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +24,7 @@
   },
   "homepage": "https://github.com/siyabuilds/banking-mock#readme",
   "devDependencies": {
-    "jasmine": "^5.9.0"
+    "jasmine": "^5.9.0",
+    "nodemon": "^3.1.10"
   }
 }
