@@ -132,4 +132,26 @@ export class Bank {
     fromAccount.withdraw({ amount: decimalAmount.toNumber() });
     toAccount.deposit({ amount: decimalAmount.toNumber() });
   }
+
+  getInterestRate({ accountNumber }) {
+    const account = retrieveAccount(accountNumber, this.#accounts);
+    if (!account) {
+      throw new Error(BANK_ERROR_MESSAGES.ACCOUNT_NOT_FOUND);
+    }
+    return account.interestRate;
+  }
+
+  getBalance({ accountNumber }) {
+    const account = retrieveAccount(accountNumber, this.#accounts);
+    if (!account) {
+      throw new Error(BANK_ERROR_MESSAGES.ACCOUNT_NOT_FOUND);
+    }
+    return account.getBalance();
+  }
+
+  compoundInterest() {
+    this.#accounts.forEach((account) => {
+      account.compoundInterest();
+    });
+  }
 }
